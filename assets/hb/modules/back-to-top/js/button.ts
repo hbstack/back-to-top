@@ -7,7 +7,7 @@ export default class Button {
         const btn = document.createElement('button')
         btn.className = 'hb-back-to-top'
         btn.ariaLabel = 'Back to top'
-        btn.innerHTML = icon
+        btn.innerHTML = this.transformIcon(icon)
         document.body.appendChild(btn)
         this.btn = btn
 
@@ -23,6 +23,7 @@ export default class Button {
                 btn.classList.remove('scrolling')
             }
             y = top
+            this.updatePos()
         });
 
         this.btn.addEventListener('click', () => {
@@ -33,6 +34,24 @@ export default class Button {
                 behavior: 'smooth',
             })
         })
+    }
+
+    transformIcon(icon) {
+        return icon.replace(/<svg(.*)>((.|\n)*)<\/svg>/, `<svg$1>
+  <defs><clipPath id="icon">$2</clipPath></defs>
+  <rect x="0" y="0" fill="currentColor" width="100%" height="100%" clip-path="url(#icon)" />
+  <rect x="0" y="100%" width="100%" height="100%" clip-path="url(#icon)" />
+</svg>`)
+    }
+
+    private posIcon: HTMLElement
+
+    updatePos() {
+        if (!this.posIcon) {
+            this.posIcon = this.btn.querySelectorAll<HTMLElement>('rect')[1]
+        }
+        const pos = document.documentElement.scrollTop / (document.documentElement.offsetHeight - document.documentElement.clientHeight)
+        this.posIcon.setAttribute('y', (1 - pos) * 100 + '%')
     }
 
     show() {
