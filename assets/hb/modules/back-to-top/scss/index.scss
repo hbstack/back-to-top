@@ -31,6 +31,12 @@
 
 .hb-back-to-top-icon {
     display: flex;
+
+    rect {
+        &:nth-of-type(2) {
+            fill: var(--#{$prefix}primary);
+        }
+    }
 }
 
 /*! purgecss end ignore */
